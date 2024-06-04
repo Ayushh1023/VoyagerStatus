@@ -1,15 +1,14 @@
+import os
+
 from flask import Flask, jsonify
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import time
-
 import awsgi
-
 app = Flask(__name__)
 
-# Initializing those tiresome global variables....duhhhhh!
 
 url = "https://voyager.jpl.nasa.gov/mission/status/"
 chrome_options = Options()
@@ -17,7 +16,7 @@ chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
-service = Service("./chromedriver.exe")
+service = Service("./chromedriver")
 driver = webdriver.Chrome(service=service, options=chrome_options)
 driver.implicitly_wait(3)
 
