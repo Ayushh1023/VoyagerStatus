@@ -7,23 +7,21 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import time
 import awsgi
-import os
-
 from waitress import serve
 
 app = Flask(__name__)
 
-os.chmod("./chromedriver", 0o755)
+os.chmod("/usr/local/bin/chromedriver", 0o755)
 url = "https://voyager.jpl.nasa.gov/mission/status/"
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
-service = Service("./chromedriver")
+chrome_options.binary_location = os.environ.get("CHROME_BIN")
+service = Service(os.environ.get("CHROMEDRIVER_PATH"))
 driver = webdriver.Chrome(service=service, options=chrome_options)
 driver.implicitly_wait(3)
-
 
 def scrape_voyager_status(url, driver):
     start_time = time.time()

@@ -4,11 +4,15 @@ services:
     name: voyager-status
     plan: free
     buildCommand: |
-      apt-get update && apt-get install -y chromium-chromedriver
+      apt-get update && apt-get install -y wget unzip
+      wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+      apt-get install -y ./google-chrome-stable_current_amd64.deb
+      wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/90.0.4430.24/chromedriver_linux64.zip
+      unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
       pip install -r requirements.txt
-    startCommand: waitress-serve --port $PORT --call 'app:create_app'
+    startCommand: waitress-serve --port $PORT app:app
     envVars:
-      - key: CHROMEDRIVER_PATH
-        value: /usr/bin/chromedriver
-      - key: GOOGLE_CHROME_BIN
+      - key: CHROME_BIN
         value: /usr/bin/google-chrome
+      - key: CHROMEDRIVER_PATH
+        value: /usr/local/bin/chromedriver
