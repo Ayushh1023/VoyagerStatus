@@ -1,27 +1,26 @@
-import os
-
 from flask import Flask, jsonify
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 import time
+
 import awsgi
-from waitress import serve
 
 app = Flask(__name__)
 
-os.chmod("/usr/local/bin/chromedriver", 0o755)
+# Initializing those tiresome global variables....duhhhhh!
+
 url = "https://voyager.jpl.nasa.gov/mission/status/"
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.binary_location = os.environ.get("CHROME_BIN")
-service = Service(os.environ.get("CHROMEDRIVER_PATH"))
+service = Service("chromedriver")
 driver = webdriver.Chrome(service=service, options=chrome_options)
 driver.implicitly_wait(3)
+
 
 def scrape_voyager_status(url, driver):
     start_time = time.time()
@@ -117,4 +116,4 @@ def working_fine():
     """
 
 if __name__ == '__main__':
-    serve(app, host='0.0.0.0', port=8080)
+    app.run(debug=True)
